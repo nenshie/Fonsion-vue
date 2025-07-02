@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import BackService from "@/services/BackService";
+import RoomTable from "@/components/RoomTable.vue";
 
 const rooms = ref([])
 const totalRecords = ref(0);
@@ -29,24 +30,7 @@ onMounted(() => {
 <template>
   <div class="p-4">
     <h1>Sobe</h1>
-    <DataTable :value="rooms" :loading="loading" responsiveLayout="scroll" stripedRows>
-      <Column field="id" header="ID" />
-      <Column field="name" header="Naziv" />
-      <Column field="capacity" header="Kapacitet" />
-      <Column field="description" header="Opis" />
-      <Column field="pricePerNight" header="Cena (€)" />
-      <Column header="Slika">
-        <template #body="slotProps">
-          <img
-              v-if="slotProps.data.imageUrl"
-              :src="slotProps.data.imageUrl"
-              alt="Slika sobe"
-              style="width: 80px; border-radius: 8px"
-          />
-          <span v-else>N/A</span>
-        </template>
-      </Column>
-    </DataTable>
+<RoomTable></RoomTable>
   </div>
 </template>
 

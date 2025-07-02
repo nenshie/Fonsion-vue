@@ -78,37 +78,36 @@ const submitReservation = async () => {
 </script>
 
 <template>
-  <div class="page-wrapper">
-    <div class="form-container p-shadow-4 p-p-5">
+  <div class="page-wrapper flex align-items-center justify-content-center">
+    <div class="form-container shadow-5 p-5">
       <h2 class="form-title p-mb-5">Rezerviši sobu</h2>
-      <form @submit.prevent="submitReservation" class="p-fluid flex gap-3">
+      <form @submit.prevent="submitReservation" class="p-fluid p-grid flex flex-column gap-3">
 
-        <div class="p-field">
-          <label for="email">Email:</label>
-          <InputText id="email" v-model="form.email" type="email" :class="{ 'input-error': errors.email }" />
+        <div class="p-field p-col-12 flex flex-column">
+          <label for="email" class="pb-1">Email:</label>
+          <InputText id="email" v-model="form.email" type="email" :class="{ 'input-error': errors.email }"/>
           <small v-if="errors.email" class="error-msg">{{ errors.email }}</small>
         </div>
 
-        <div class="p-field p-grid">
-          <div class="p-col-6">
-            <label for="dateFrom">Datum dolaska:</label>
-            <Calendar id="dateFrom" v-model="form.dateFrom" dateFormat="yy-mm-dd" showIcon :class="{ 'input-error': errors.dateFrom }" />
-            <small v-if="errors.dateFrom" class="error-msg">{{ errors.dateFrom }}</small>
-          </div>
-          <div class="p-col-6">
-            <label for="dateTo">Datum odlaska:</label>
-            <Calendar id="dateTo" v-model="form.dateTo" dateFormat="yy-mm-dd" showIcon :class="{ 'input-error': errors.dateTo }" />
-            <small v-if="errors.dateTo" class="error-msg">{{ errors.dateTo }}</small>
-          </div>
+        <div class="p-field p-col-12 flex flex-column p-md-6">
+          <label for="dateFrom" class="pb-1">Datum dolaska:</label>
+          <Calendar id="dateFrom" v-model="form.dateFrom" dateFormat="yy-mm-dd" showIcon :class="{ 'input-error': errors.dateFrom }" />
+          <small v-if="errors.dateFrom" class="error-msg">{{ errors.dateFrom }}</small>
         </div>
 
-        <div class="p-field">
-          <label for="discountCode">Promo kod (nije obavezno):</label>
+        <div class="p-field p-col-12 flex flex-column p-md-6">
+          <label for="dateTo" class="pb-1">Datum odlaska:</label>
+          <Calendar id="dateTo" v-model="form.dateTo" dateFormat="yy-mm-dd" showIcon :class="{ 'input-error': errors.dateTo }" />
+          <small v-if="errors.dateTo" class="error-msg">{{ errors.dateTo }}</small>
+        </div>
+
+        <div class="p-field p-col-12 flex flex-column">
+          <label for="discountCode" class="pb-1">Promo kod (nije obavezno):</label>
           <InputText id="discountCode" v-model="form.discountCode" />
         </div>
 
-        <div class="p-field">
-          <label for="guestNames">Gosti (po jedan po liniji):</label>
+        <div class="p-field p-col-12">
+          <label for="guestNames" class="pb-1">Gosti (po jedan po liniji):</label>
           <Textarea
               id="guestNames"
               v-model="form.guestNames"
@@ -119,11 +118,15 @@ const submitReservation = async () => {
           <small v-if="errors.guestNames" class="error-msg">{{ errors.guestNames }}</small>
         </div>
 
-        <Button label="Rezerviši" icon="pi pi-check" type="submit" class="p-mt-4 submit-btn" />
+        <div class="p-col-12">
+          <Button label="Rezerviši" icon="pi pi-check" type="submit" class="submit-btn" />
+        </div>
+
       </form>
     </div>
   </div>
 </template>
+
 
 <style scoped>
 :root {
@@ -132,23 +135,18 @@ const submitReservation = async () => {
   --light-pink: #CEABB1;
 }
 
-/* Neutralna, svetla pozadina sa blagim sivim prelivom */
 .page-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1rem;
+  min-height: 80vh;
+  background: linear-gradient(135deg, var(--light), var(--accent));
+  color: var(--dark);
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Providna, svetla pozadina forme */
 .form-container {
-  width: 100%;
   max-width: 480px;
   background-color: #DDDBF1;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(68, 69, 69, 0.15);
-  padding: 2rem 2.5rem;
 }
 
 .form-title {
@@ -156,7 +154,6 @@ const submitReservation = async () => {
   text-align: center;
   font-weight: 700;
   font-size: 2rem;
-  margin-bottom: 1.5rem;
 }
 
 label {
@@ -188,22 +185,24 @@ textarea.input-error,
 }
 
 .error-msg {
-  color: var(--light-pink);
+  color: red;
   font-size: 0.85rem;
   margin-top: 0.25rem;
-  display: block;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .submit-btn {
+  margin-top: 1rem;
   width: 100%;
   background-color: var(--light-pink);
   border-color: var(--light-pink);
+  border-radius:10px;
   color: var(--dark-gray);
   font-weight: 700;
   font-size: 1.1rem;
   transition: background-color 0.3s ease;
 }
+
 .submit-btn:hover {
   background-color: var(--dark-gray);
   border-color: var(--dark-gray);

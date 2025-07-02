@@ -3,14 +3,19 @@ import { ref, onMounted } from 'vue'
 import Button from 'primevue/button'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import {useI18n} from "vue-i18n";
+import {useToast} from "primevue/usetoast";
 
 const router = useRouter();
 const rooms = ref([])
+const toast = useToast();
+let totalRecords = ref(0);
 
 onMounted(async () => {
   try {
     const response = await axios.get("/room/get-all");
     rooms.value = response.data
+    totalRecords.value = rooms.value.length
   } catch (err) {
     console.error('Greška pri učitavanju soba:', err)
   }
@@ -30,11 +35,43 @@ const reserve = (room) => {
         class="custom-room-table"
         :showGridlines="false"
         style="background: transparent;"
+        :totalRecords="rooms.length"
+        paginator
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rows="10"
+        :rowsPerPageOptions="[10, 25, 50]"
+        currentPageReportTemplate="Prikazano {first} do {last} od ukupno {totalRecords} stavki"
     >
-      <Column field="name" header="Naziv sobe" />
-      <Column field="capacity" header="Kapacitet" />
-      <Column field="pricePerNight" header="Cena po noći (€)" />
-      <Column header="Slika" :style="{ width: '150px' }">
+
+      <!-- Naziv sobe -->
+      <Column field="name" header="Naziv sobe" class="flex-column align-items-center justify-content-center bg-white">
+        <template #body="slotProps">
+          <div class="text-center w-full overflow-hidden">
+            {{ slotProps.data.name }}
+          </div>
+        </template>
+      </Column>
+
+      <!-- Kapacitet -->
+      <Column field="capacity" header="Kapacitet" class="flex-column align-items-center justify-content-center bg-white">
+        <template #body="slotProps">
+          <div class="text-center">
+            {{ slotProps.data.capacity }}
+          </div>
+        </template>
+      </Column>
+
+      <!-- Cena po noći -->
+      <Column field="pricePerNight" header="Cena po noći (€)" class="flex-column align-items-center justify-content-center bg-white">
+        <template #body="slotProps">
+          <div class="text-center">
+            € {{ slotProps.data.pricePerNight.toFixed(2) }}
+          </div>
+        </template>
+      </Column>
+
+      <!-- Slika sobe -->
+      <Column header="Slika" class=" flex-column align-items-center justify-content-center bg-white">
         <template #body="slotProps">
           <img
               v-if="slotProps.data.imageUrl"
@@ -45,7 +82,9 @@ const reserve = (room) => {
           <span v-else>N/A</span>
         </template>
       </Column>
-      <Column header="Akcija" :style="{ width: '100px' }">
+
+      <!-- Dugme rezervacije -->
+      <Column header="" class=" flex-column align-items-center justify-content-center bg-white">
         <template #body="slotProps">
           <Button
               label="Rezerviši"
@@ -55,14 +94,15 @@ const reserve = (room) => {
           />
         </template>
       </Column>
+
     </DataTable>
   </div>
 </template>
 
 <style scoped>
 .custom-room-table .p-datatable-thead > tr > th {
-  background-color: #444545; /* tamno siva */
-  color: #B5FFE9; /* svetlozelena */
+  background-color: #444545;
+  color: #B5FFE9;
   font-weight: 700;
   font-size: 1rem;
   text-align: center;
@@ -70,21 +110,21 @@ const reserve = (room) => {
 }
 
 .custom-room-table .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #F7FAF7; /* skoro bela sa zelenim podtonom, da ne smeta */
+  background-color: #F7FAF7;
 }
 
 .custom-room-table .p-datatable-tbody > tr:nth-child(odd) {
-  background-color: #FFFFFF; /* čista bela za kontrast */
+  background-color: #FFFFFF;
 }
 
 .custom-room-table .p-datatable-tbody > tr:hover {
-  background-color: #CEABB1; /* pastel roze */
+  background-color: #CEABB1;
   color: #444545;
   cursor: pointer;
 }
 
 .room-image {
-  width: 200px;
+  width: 150px;
   height: 80px;
   object-fit: cover;
   border-radius: 8px;
@@ -94,8 +134,8 @@ const reserve = (room) => {
 
 .reserve-btn {
   width: 100%;
-  background-color: #444545; /* tamno siva */
-  color: #D1BEB0 !important; /* svetlozelena */
+  background-color: #444545;
+  color: #D1BEB0 !important;
   border: none;
   font-weight: 600;
   border-radius: 8px;

@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Room from '@/views/Room.vue'
+import Rooms from '@/views/Rooms.vue'
 import HomePage from "@/views/HomePage.vue";
 import ReservationDetails from "@/views/ReservationDetails.vue";
-import ReservationPage from "@/views/ReservationPage.vue";
+import MyReservationsPage from "@/views/MyReservationsPage.vue";
 
 const routes = [
     {
@@ -11,8 +11,8 @@ const routes = [
         component: HomePage,
     },
     {
-        path: '/reservation',
-        component: ReservationPage
+        path: '/my-reservations',
+        component: MyReservationsPage
     },
     {
         path: '/reservation-details',
@@ -20,9 +20,9 @@ const routes = [
         component: ReservationDetails,
     },
     {
-        path: '/room',
-        name: 'room',
-        component: Room
+        path: '/rooms',
+        name: 'rooms',
+        component: Rooms
     },
     {
         path: '/reservation/create/:id',

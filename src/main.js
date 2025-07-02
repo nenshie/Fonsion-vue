@@ -14,12 +14,14 @@ import Textarea from "primevue/textarea";
 import InputText from "primevue/inputtext";
 import Calendar from "primevue/calendar";
 import Button from "primevue/button";
-
+import 'primeflex/primeflex.css';
+import ToastService from "primevue/toastservice";
 
 const app = createApp(App)
 
 app.use(router)
 app.use(PrimeVue)
+app.use(ToastService)
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
 app.component('DataTable', DataTable)

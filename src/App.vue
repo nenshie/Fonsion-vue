@@ -15,12 +15,12 @@ const items = ref([
   {
     label: 'Sobe',
     icon: 'pi pi-building',
-    command: () => router.push('/room')
+    command: () => router.push('/rooms')
   },
   {
     label: 'Moje rezervacije',
     icon: 'pi pi-calendar',
-    command: () => router.push('/reservation')
+    command: () => router.push('/my-reservations')
   }
 ])
 </script>
