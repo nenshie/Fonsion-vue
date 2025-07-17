@@ -1,16 +1,21 @@
 <script setup>
-import { reactive } from "vue";
+import {reactive, ref} from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import { useToast } from 'primevue/usetoast';
 import * as yup from "yup";
 
 import Textarea from 'primevue/textarea';
 import InputText from 'primevue/inputtext';
 import Button from "primevue/button";
 import Calendar from "primevue/calendar";
+import ReservationService from "@/services/ReservationService";
+
+const toast = useToast();
 
 const router = useRouter();
 const route = useRoute();
+
+const reservationService = new ReservationService();
 
 const form = reactive({
   email: "",
@@ -52,10 +57,12 @@ const validateForm = async () => {
   }
 };
 
-const submitReservation = async () => {
-  if (!await validateForm()) return;
+const submitReservation = () => {
+  validateForm().then(isValid => {
+    if (!isValid) {
+      return;
+    }
 
-  try {
     const request = {
       roomId: route.params.id,
       email: form.email,
@@ -64,24 +71,29 @@ const submitReservation = async () => {
       discountCode: form.discountCode || null,
       guests: form.guestNames
           .split("\n")
-          .map((name) => name.trim())
-          .filter((name) => name),
+          .map(name => name.trim())
+          .filter(name => name),
     };
 
-    await axios.post("/reservation/create", request);
-    alert("Uspešna rezervacija!");
-    router.push("/");
-  } catch (err) {
-    alert("Greška: " + (err.response?.data?.message || err.message));
-  }
+    reservationService.createReservation(request)
+        .then(() => {
+          toast.add({severity:'success', summary: 'Uspeh', detail: 'Uspešna rezervacija!', life: 3000});
+          router.push("/");
+        })
+        .catch(() => {
+          toast.add({severity:'error', summary: 'Greška', detail: "Došlo je do greške prilikom rezervacije", life: 3000});
+        })
+
+  });
 };
+
 </script>
 
 <template>
   <div class="page-wrapper flex align-items-center justify-content-center">
     <div class="form-container shadow-5 p-5">
       <h2 class="form-title p-mb-5">Rezerviši sobu</h2>
-      <form @submit.prevent="submitReservation" class="p-fluid p-grid flex flex-column gap-3">
+      <form @submit="submitReservation" class="p-fluid p-grid flex flex-column gap-3">
 
         <div class="p-field p-col-12 flex flex-column">
           <label for="email" class="pb-1">Email:</label>
@@ -119,7 +131,7 @@ const submitReservation = async () => {
         </div>
 
         <div class="p-col-12">
-          <Button label="Rezerviši" icon="pi pi-check" type="submit" class="submit-btn" />
+          <Button label="Rezerviši" icon="pi pi-check" type="submit" class="submit-btn"/>
         </div>
 
       </form>
@@ -171,17 +183,6 @@ textarea,
   color: var(--dark-gray) !important;
   background-color: white !important;
   transition: border-color 0.3s ease;
-}
-
-input:focus,
-textarea:focus,
-.p-calendar:focus,
-input.input-error,
-textarea.input-error,
-.p-calendar.input-error {
-  outline: none !important;
-  border-color: var(--light-pink) !important;
-  box-shadow: 0 0 6px var(--light-pink);
 }
 
 .error-msg {

@@ -15,10 +15,12 @@ import Footer from '@/components/Footer.vue'
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Lexend&display=swap');
+
 .app-wrapper {
   background: linear-gradient(135deg, var(--light), var(--accent));
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Lexend', sans-serif;
   display: flex;
   flex-direction: column;
 }

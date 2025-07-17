@@ -37,21 +37,5 @@ const items = ref([
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.custom-menubar .p-menuitem-text {
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: color 0.3s;
-}
 
-.custom-menubar .p-menuitem-icon {
-  color: white;
-  margin-right: 0.5rem;
-}
-
-.custom-menubar .p-menuitem:hover {
-  background-color: var(--accent);
-  border-radius: 6px;
-  transition: background-color 0.3s;
-}
 </style>

@@ -1,22 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import BackService from "@/services/BackService";
+import RoomService from "@/services/RoomService";
 import RoomTable from "@/components/RoomTable.vue";
 
 const rooms = ref([])
 const totalRecords = ref(0);
-const loading = ref(false);
-const backService = new BackService();
+const backService = new RoomService();
 
 const getItems = () =>{
-loading.value = true;
   backService.getAllRooms().then((response) =>{
     console.log("getItems returned: ", response.data);
     rooms.value = response.data;
-    loading.value = false;
   }).catch((err) => {
     console.error("--- error fetching interpretations: " + JSON.stringify(err));
-    loading.value = false;
   });
 
 }
@@ -37,19 +33,4 @@ onMounted(() => {
 
 
 <style scoped>
-.room-list {
-  padding: 20px;
-}
-
-.room-card {
-  border: 1px solid #ddd;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-}
-
-img {
-  max-width: 200px;
-  margin-top: 10px;
-}
 </style>

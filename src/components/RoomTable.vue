@@ -38,8 +38,8 @@ const reserve = (room) => {
         :totalRecords="rooms.length"
         paginator
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rows="10"
-        :rowsPerPageOptions="[10, 25, 50]"
+        :rows="5"
+        :rowsPerPageOptions="[5, 10, 15]"
         currentPageReportTemplate="Prikazano {first} do {last} od ukupno {totalRecords} stavki"
     >
 
@@ -100,28 +100,6 @@ const reserve = (room) => {
 </template>
 
 <style scoped>
-.custom-room-table .p-datatable-thead > tr > th {
-  background-color: #444545;
-  color: #B5FFE9;
-  font-weight: 700;
-  font-size: 1rem;
-  text-align: center;
-  border-bottom: 2px solid #CEABB1;
-}
-
-.custom-room-table .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #F7FAF7;
-}
-
-.custom-room-table .p-datatable-tbody > tr:nth-child(odd) {
-  background-color: #FFFFFF;
-}
-
-.custom-room-table .p-datatable-tbody > tr:hover {
-  background-color: #CEABB1;
-  color: #444545;
-  cursor: pointer;
-}
 
 .room-image {
   width: 150px;
@@ -135,7 +113,7 @@ const reserve = (room) => {
 .reserve-btn {
   width: 100%;
   background-color: #444545;
-  color: #D1BEB0 !important;
+  color: #D1BEB0;
   border: none;
   font-weight: 600;
   border-radius: 8px;
@@ -145,7 +123,7 @@ const reserve = (room) => {
 
 .reserve-btn:hover {
   background-color: #363636;
-  color: #CEABB1 !important;
+  color: #CEABB1;
   box-shadow: 0 4px 12px rgba(68, 69, 69, 0.3);
   cursor: pointer;
 }
