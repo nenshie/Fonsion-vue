@@ -6,6 +6,7 @@ import Footer from '@/components/Footer.vue'
 
 <template>
   <div class="app-wrapper">
+    <Toast />
     <MenuBar />
     <main class="content">
       <RouterView />

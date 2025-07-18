@@ -16,6 +16,8 @@ const router = useRouter();
 const route = useRoute();
 
 const reservationService = new ReservationService();
+const previewData = ref(null);
+const showPreview = ref(false);
 
 const form = reactive({
   email: "",
@@ -32,7 +34,6 @@ const errors = reactive({
   guestNames: ""
 });
 
-// Yup schema za validaciju
 const schema = yup.object().shape({
   email: yup.string().required("Email je obavezan").email("Email nije validan"),
   dateFrom: yup.date().required("Datum dolaska je obavezan"),
@@ -57,7 +58,39 @@ const validateForm = async () => {
   }
 };
 
-const submitReservation = () => {
+const previewReservation = async () => {
+  const isValid = await validateForm();
+  if (!isValid) return;
+
+  const request = {
+    roomId: route.params.id,
+    email: form.email,
+    dateFrom: form.dateFrom?.toISOString().slice(0, 10),
+    dateTo: form.dateTo?.toISOString().slice(0, 10),
+    discountCode: form.discountCode || null,
+    guests: form.guestNames
+        .split("\n")
+        .map(name => name.trim())
+        .filter(name => name),
+  };
+
+  reservationService.previewReservation(request)
+      .then(res => {
+        previewData.value = res.data;
+        console.log("dada ", previewData.value);
+        showPreview.value = true;
+      })
+      .catch(error => {
+        toast.add({
+          severity: 'error',
+          summary: 'Greška',
+          detail: error.response?.data?.message || 'Došlo je do greške',
+          life: 3000
+        });
+      });
+};
+
+const confirmReservation = () => {
   validateForm().then(isValid => {
     if (!isValid) {
       return;
@@ -77,10 +110,14 @@ const submitReservation = () => {
 
     reservationService.createReservation(request)
         .then(() => {
+          showPreview.value = false;
+
           toast.add({severity:'success', summary: 'Uspeh', detail: 'Uspešna rezervacija!', life: 3000});
           router.push("/");
         })
         .catch(() => {
+          showPreview.value = false;
+
           toast.add({severity:'error', summary: 'Greška', detail: "Došlo je do greške prilikom rezervacije", life: 3000});
         })
 
@@ -93,7 +130,7 @@ const submitReservation = () => {
   <div class="page-wrapper flex align-items-center justify-content-center">
     <div class="form-container shadow-5 p-5">
       <h2 class="form-title p-mb-5">Rezerviši sobu</h2>
-      <form @submit="submitReservation" class="p-fluid p-grid flex flex-column gap-3">
+      <form @submit.prevent="previewReservation" class="p-fluid p-grid flex flex-column gap-3">
 
         <div class="p-field p-col-12 flex flex-column">
           <label for="email" class="pb-1">Email:</label>
@@ -137,6 +174,65 @@ const submitReservation = () => {
       </form>
     </div>
   </div>
+
+  <Dialog
+      v-model:visible="showPreview"
+      modal
+      class="p-fluid border-round-3xl bg-orange"
+      header="Pregled rezervacije"
+      :style="{
+        width: '450px',
+        boxShadow: '0 8px 24px rgba(68, 69, 69, 0.15)',
+      }"
+    >
+      <div  style=" padding: 2rem 2rem 2.5rem;  border-radius: 16px;background: linear-gradient(35deg, #f3efdd, #e8dadf); " >
+      <div style="margin-bottom:1.1rem;">
+        <p style="margin: 0 0 0.75rem 0;"><strong>Email:</strong> {{ previewData?.email }}</p>
+        <p style="margin: 0 0 0.75rem 0;"><strong>Datum od:</strong> {{ previewData?.dateFrom }}</p>
+        <p style="margin: 0 0 0.75rem 0;"><strong>Datum do:</strong> {{ previewData?.dateTo }}</p>
+        <p style="margin: 0 0 0.3rem 0;"><strong>Gosti:</strong></p>
+        <ul style="margin-top:0; margin-bottom:0.9rem; padding-left:1.3rem; color:#444545;">
+          <li v-for="guest in previewData?.guests" :key="guest" style="margin-bottom:0.2rem;">
+            {{ guest }}
+          </li>
+        </ul>
+        <p style="margin: 0 0 0.75rem 0;"><strong>Ukupna cena:</strong> {{ previewData?.totalPrice }} RSD</p>
+        <p v-if="previewData?.discountCode" style="margin: 0 0 0.75rem 0;">
+          <strong>Iskorišćen promo kod:</strong> {{ previewData.discountCode }}
+        </p>
+        <p v-if="previewData?.message"
+           style="background:#ffeef2; border-radius:8px; padding:0.6rem 1rem; color:#7a5360;">
+          {{ previewData.message }}
+        </p>
+      </div>
+
+      <div class="flex gap-2 justify-content-end mt-4" style="display:flex; gap:0.8rem; justify-content:flex-end; margin-top:2.1rem;">
+        <Button
+            class="submit-btn"
+            label="Potvrdi"
+            @click="confirmReservation"
+            :style="{
+              color: '#CEABB1',
+              transition: 'background-color 0.3s',
+              padding: '0.6rem 1.6rem'
+        }"
+        />
+        <Button
+            label="Odustani"
+            severity="secondary"
+            class="submit-btn"
+            @click="showPreview = false"
+            :style="{
+              color: '#444545',
+        }"
+
+        />
+      </div>
+    </div>
+  </Dialog>
+
+
+
 </template>
 
 
@@ -151,12 +247,11 @@ const submitReservation = () => {
   min-height: 80vh;
   background: linear-gradient(135deg, var(--light), var(--accent));
   color: var(--dark);
-  font-family: 'Segoe UI', sans-serif;
 }
 
 .form-container {
   max-width: 480px;
-  background-color: #DDDBF1;
+  background: linear-gradient(135deg, var(--accent), var(--light));
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(68, 69, 69, 0.15);
 }
@@ -181,7 +276,7 @@ textarea,
   padding: 0.6rem !important;
   font-size: 1rem;
   color: var(--dark-gray) !important;
-  background-color: white !important;
+  background-color: rgba(241, 237, 234, 0.53);
   transition: border-color 0.3s ease;
 }
 
@@ -209,4 +304,5 @@ textarea,
   border-color: var(--dark-gray);
   color: white;
 }
+
 </style>

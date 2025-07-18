@@ -8,4 +8,8 @@ export default class ReservationService {
     createReservation(request) {
         return axios.post(`${API_URL}/create`, request);
     }
+
+    previewReservation(request) {
+        return axios.post(`${API_URL}/preview`, request);
+    }
 }

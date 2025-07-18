@@ -15,7 +15,10 @@ import InputText from "primevue/inputtext";
 import Calendar from "primevue/calendar";
 import Button from "primevue/button";
 import 'primeflex/primeflex.css';
-import ToastService from "primevue/toastservice";
+import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast'
+import Dialog from 'primevue/dialog';
+
 
 const app = createApp(App)
 
@@ -30,5 +33,8 @@ app.component('Button', Button)
 app.component('InputText', InputText)
 app.component('Calendar', Calendar)
 app.component('Textarea', Textarea)
+app.component('Toast', Toast);
+app.component('Dialog', Dialog);
+
 
 app.mount('#app')

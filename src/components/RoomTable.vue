@@ -1,29 +1,38 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {onMounted, ref} from 'vue'
 import Button from 'primevue/button'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
-import {useI18n} from "vue-i18n";
+import {useRouter} from 'vue-router'
 import {useToast} from "primevue/usetoast";
+import RoomService from "@/services/RoomService";
+
 
 const router = useRouter();
 const rooms = ref([])
 const toast = useToast();
 let totalRecords = ref(0);
 
-onMounted(async () => {
-  try {
-    const response = await axios.get("/room/get-all");
-    rooms.value = response.data
-    totalRecords.value = rooms.value.length
-  } catch (err) {
-    console.error('Greška pri učitavanju soba:', err)
-  }
-})
+const roomService = new RoomService();
+
+const getItems = () =>{
+  roomService.getAllRooms().then((response) =>{
+    console.log("getItems returned: ", response.data);
+    rooms.value = response.data;
+    totalRecords.value = response.data.left;
+  }).catch((err) => {
+    console.error("--- error fetching rooms: " + JSON.stringify(err));
+  });
+
+}
 
 const reserve = (room) => {
   router.push(`/reservation/create/${room.id}`);
 };
+
+onMounted(() => {
+  getItems();
+});
+
+
 </script>
 
 <template>
@@ -35,7 +44,7 @@ const reserve = (room) => {
         class="custom-room-table"
         :showGridlines="false"
         style="background: transparent;"
-        :totalRecords="rooms.length"
+        :totalRecords="totalRecords"
         paginator
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rows="5"
