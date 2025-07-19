@@ -118,7 +118,7 @@ watch(
           <input v-model="token" id="token" type="text" class="form-input" />
         </div>
 
-        <button @click="verifyAccess" class="submit-btn">Pristupi</button>
+        <button @click="verifyAccess" class="submit-btn">Pregledaj svoje rezervacije</button>
       </div>
 
       <div v-if="verified && !loading">
@@ -235,7 +235,7 @@ label {
 .submit-btn {
   margin-top: 1rem;
   width: 100%;
-  background-color: var(--light-pink);
+  background-color: var(--soft-bg);
   border: none;
   border-radius: 10px;
   color: var(--dark-gray);
