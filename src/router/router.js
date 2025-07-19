@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Rooms from '@/views/Rooms.vue'
 import HomePage from "@/views/HomePage.vue";
-import ReservationDetails from "@/views/ReservationDetails.vue";
 import MyReservationsPage from "@/views/MyReservationsPage.vue";
 
 const routes = [
@@ -12,12 +11,8 @@ const routes = [
     },
     {
         path: '/my-reservations',
+        name: 'MyReservations',
         component: MyReservationsPage
-    },
-    {
-        path: '/reservation-details',
-        name: 'ReservationDetails',
-        component: ReservationDetails,
     },
     {
         path: '/rooms',

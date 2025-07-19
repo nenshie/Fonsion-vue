@@ -109,11 +109,19 @@ const confirmReservation = () => {
     };
 
     reservationService.createReservation(request)
-        .then(() => {
+        .then((response) => {
           showPreview.value = false;
-
+          console.log("Response: ",response);
           toast.add({severity:'success', summary: 'Uspeh', detail: 'Uspešna rezervacija!', life: 3000});
-          router.push("/");
+          setTimeout(() => {
+            router.push({
+              path: '/my-reservations',
+              query: {
+                token: response.data.token,
+                email: response.data.email
+              }
+            });
+          }, 1000);
         })
         .catch(() => {
           showPreview.value = false;

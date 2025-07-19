@@ -12,4 +12,15 @@ export default class ReservationService {
     previewReservation(request) {
         return axios.post(`${API_URL}/preview`, request);
     }
+
+    getReservationsByToken(email, token) {
+        return axios.get(`${API_URL}/verify-access`, {
+            params: { email, token }
+        });
+    }
+
+    cancelReservation(id) {
+        return axios.put(`${API_URL}/cancel/${id}`);
+    }
+
 }
