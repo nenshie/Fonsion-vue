@@ -2,7 +2,11 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import ReservationService from '@/services/ReservationService';
+import {useToast} from "primevue/usetoast";
 
+
+
+const toast = useToast();
 const email = ref('');
 const token = ref('');
 const verified = ref(false);
@@ -49,34 +53,21 @@ const confirmCancel = () => {
       .then(() => {
         verifyAccess();
       })
-      .catch(() => {
-        errorMessage.value = "Došlo je do greške prilikom otkazivanja rezervacije.";
+      .catch((error) => {
+        console.log(error);
+        toast.add({
+          severity: 'error',
+          summary: 'Greška',
+          detail: error.response?.data?.message || 'Došlo je do greške, rezervaciju je moguće otkazati najkasnije 5 dana pre početnog datuma.',
+          life: 3000
+        });
       })
       .finally(() => {
         showCancelDialog.value = false;
         loading.value = false;
       });
 };
-const cancelReservation = (id) => {
-  if (!confirm('Da li ste sigurni da želite da otkažete ovu rezervaciju?')) {
-    return;
-  }
 
-  loading.value = true;
-
-  reservationService.cancelReservation(id)
-      .then(() => {
-        // Refresh current reservations
-        verifyAccess();
-      })
-      .catch((err) => {
-        errorMessage.value = "Došlo je do greške prilikom otkazivanja rezervacije.";
-        console.error(err);
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-};
 
 watch(
     () => route.query,
