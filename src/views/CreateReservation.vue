@@ -74,20 +74,35 @@ const previewReservation = async () => {
         .filter(name => name),
   };
 
-  reservationService.previewReservation(request)
-      .then(res => {
-        previewData.value = res.data;
-        console.log("dada ", previewData.value);
-        showPreview.value = true;
-      })
-      .catch(error => {
-        toast.add({
+  try {
+    const res = await  reservationService.previewReservation(request);
+
+    previewData.value = res.data;
+    console.log("dada ", previewData.value);
+    showPreview.value = true;
+  }catch (error) {
+    toast.add({
           severity: 'error',
           summary: 'Greška',
           detail: error.response?.data?.message || 'Došlo je do greške',
           life: 3000
         });
-      });
+  }
+
+
+      // .then(res => {
+      //   previewData.value = res.data;
+      //   console.log("dada ", previewData.value);
+      //   showPreview.value = true;
+      // })
+      // .catch(error => {
+      //   toast.add({
+      //     severity: 'error',
+      //     summary: 'Greška',
+      //     detail: error.response?.data?.message || 'Došlo je do greške',
+      //     life: 3000
+      //   });
+      // });
 };
 
 const confirmReservation = () => {

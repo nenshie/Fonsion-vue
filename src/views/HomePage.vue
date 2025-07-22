@@ -87,7 +87,6 @@ const images = ref([
     </div>
 
 
-    <!-- Room Section -->
     <div class="room-section">
       <h2 class="section-title">Dostupne sobe</h2>
       <RoomTable />

@@ -90,7 +90,7 @@ watch(
 
 <template>
   <div class="">
-      <h2 class="page-title">Moje rezervacije</h2>
+      <h2 class="page-title">Moja rezervacija</h2>
 
 
     <div class="container shadow-5 p-5 rounded-box">
@@ -119,12 +119,12 @@ watch(
 
         <div v-else class="reservations-grid">
         <div
-            v-for="(res, index) in reservations"
+            v-for="res in reservations"
             :key="res.id"
             class="reservation-box"
         >
           <div class="reservation-header">
-            <h3>Detalji rezervacije {{ index + 1 }}</h3>
+            <h3>Detalji rezervacije </h3>
           </div>
 
           <p><strong>Soba:</strong> {{ res.room.name }}</p>
